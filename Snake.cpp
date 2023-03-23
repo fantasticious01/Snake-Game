@@ -183,7 +183,7 @@ void SnakeGame::drawSnake() {
     //   NamedColor::silver.
     // After the loop, call setBGColor again to set the head of the snake to
     // white.
-    for(Queue<Pair<int>>::iterator i = snake.begin(); i != snake.end();){
+    for(Queue<Pair<int>>::iterator i = snake.begin(); i != snake.end(); i++){
         int x = i->getFirst();
         int y = i->getSecond();
         setBGColor(x, y, NamedColor::silver);

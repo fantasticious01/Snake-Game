@@ -1,9 +1,10 @@
 
+#include "Snake.h"
+
 #include <NonBlockingGame.h>
 #include <time.h>
-#include <iostream>
 
-#include "Snake.h"
+#include <iostream>
 
 //
 //  The purpose of this assignment is to learn to
@@ -54,13 +55,18 @@ void SnakeGame::handleInput() {
 // update snake position -- delete node from head of queue (tail of snake)
 // and add new node to tail of queue (head of snake);
 void SnakeGame::updateSnake() {
-    // TODO:
+    // TODO (DONE):
     // if skipDeletingTailNodesCount is 0, remove the tail of the snake.
     // otherwise, decrement skipDeletingTailNodesCount.
+    if (skipDeletingTailNodesCount == 0) {
+        snake.remove();
+    } else {
+        skipDeletingTailNodesCount--;
+    }
 
     // based on the direction, compute the new head of the snake
     // by getting the current head, altering it, and adding it.
-    Pair<int> head = // TODO: finish the code here.
+    Pair<int> head = snake.getLast();  // TODO: finish the code here.
 
     int x, y;
     switch (dir) {
@@ -91,40 +97,57 @@ void SnakeGame::updateSnake() {
         }
     }
 
-    // TODO: add the new head to the snake
+    // TODO (DONE): add the new head to the snake
+    snake.add(Pair<int>(x, y));
 }
 
 void SnakeGame::plantTarget() {
     int x;
     int y;
 
-    // TODO:
+    // TODO (DONE):
     // repeatedly:
     //   get a random x and random y, within the BOARD_SIZE
     //      o use rand() and the modulo operator
     //   if this x,y location is not part of the snake already,
     //      break out of the loop and store x, y in "target"
+    while (true) {
+        x = rand() % BOARD_SIZE;
+        y = rand() % BOARD_SIZE;
+        if (!snake.contains(Pair<int>(x, y))) break;
+    }
+    target = Pair<int>(x, y);
 }
 
 // check if snake has found the target
 void SnakeGame::detectTarget() {
-
-    // TODO:
+    // TODO (DONE):
     // get the head of the snake from the queue.
     // if the head is the same as the target:
     //    use the following code to erase the target.
     //    drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
     //           NamedColor::red);
-    //    call plantTarget() to put the target down again in a new random location.
+    //    call plantTarget() to put the target down again in a new random
+    //    location.
+    Pair<int> head = snake.getLast();
+    if (head == target) {
+        drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
+                   NamedColor::red);
+        plantTarget();
+    }
 }
 
 // check if snake ate itself! Yuk!
 void SnakeGame::detectDeath() {
-    // TODO:
+    // TODO (DONE):
     // We have already put the new block on the head of the snake,
-    // so we need to check if that block  is somewhere else already in the body of the snake.
-    // Implementation:
-    // if the head of the snake is already in the body of the snake, call exit(0) to end the game.
+    // so we need to check if that block  is somewhere else already in the body
+    // of the snake. Implementation: if the head of the snake is already in the
+    // body of the snake, call exit(0) to end the game.
+    Pair<int> head = snake.getLast();
+    if (snake.contains(head)){
+        exit(0);
+    }
 }
 
 void SnakeGame::paintBoard() {
@@ -156,8 +179,10 @@ void SnakeGame::drawTarget() {
 void SnakeGame::drawSnake() {
     // TODO:
     // iterate through the snake queue, using the queue iterator.
-    //   for each item (a Pair object), call setBGColor to set the square to NamedColor::silver.
-    // After the loop, call setBGColor again to set the head of the snake to white.
+    //   for each item (a Pair object), call setBGColor to set the square to
+    //   NamedColor::silver.
+    // After the loop, call setBGColor again to set the head of the snake to
+    // white.
 }
 
 // handle input, check if target was detected, update position, redraw,
@@ -165,7 +190,7 @@ void SnakeGame::drawSnake() {
 void SnakeGame::gameLoop() {
     frame += 1;
     handleInput();
-    if (frame >= 5) {           // this could be changed to make the game run faster...
+    if (frame >= 5) {  // this could be changed to make the game run faster...
         lastDir = dir;
         updateSnake();
         detectTarget();

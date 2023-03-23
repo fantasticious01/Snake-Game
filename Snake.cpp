@@ -183,6 +183,14 @@ void SnakeGame::drawSnake() {
     //   NamedColor::silver.
     // After the loop, call setBGColor again to set the head of the snake to
     // white.
+    for(Queue<Pair<int>>::iterator i = snake.begin(); i != snake.end();){
+        int x = i->getFirst();
+        int y = i->getSecond();
+        setBGColor(x, y, NamedColor::silver);
+    }
+    setBGColor(snake.getLast().getFirst(), snake.getLast().getSecond(), NamedColor::white);
+
+   
 }
 
 // handle input, check if target was detected, update position, redraw,

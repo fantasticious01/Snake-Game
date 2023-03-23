@@ -5,7 +5,7 @@
 #include <string>
 
 using namespace std;
-
+  
 template <class Item>
 class Pair {
 public:

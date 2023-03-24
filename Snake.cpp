@@ -115,9 +115,9 @@ void SnakeGame::plantTarget() {
         x = rand() % BOARD_SIZE;
         y = rand() % BOARD_SIZE;
         if (!snake.contains(Pair<int>(x, y))) {
+            target = Pair<int>(x, y);
             break;
         }
-        target = Pair<int>(x, y);
     }
 }
 
@@ -136,6 +136,7 @@ void SnakeGame::plantTarget() {
         if (head == target) {
             drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
                        NamedColor::red);
+            skipDeletingTailNodesCount = 1;
             plantTarget();
         }
     }
@@ -147,10 +148,10 @@ void SnakeGame::plantTarget() {
         // so we need to check if that block  is somewhere else already in the
         // body of the snake. Implementation: if the head of the snake is
         // already in the body of the snake, call exit(0) to end the game.
-        // Pair<int> head = snake.getLast();
-        // if (snake.contains(head)){
-        //     exit(0);
-        // }
+        Pair<int> head = snake.getLast();
+        if (snake.contains(head)){
+            exit(0); 
+        }
     }
 
     void SnakeGame::paintBoard() {

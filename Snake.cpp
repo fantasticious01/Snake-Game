@@ -98,7 +98,7 @@ void SnakeGame::updateSnake() {
     }
 
     // TODO (DONE): add the new head to the snake
-    snake.add(Pair<int>(x, y));
+    snake.add(head);
 }
 
 void SnakeGame::plantTarget() {
@@ -114,109 +114,113 @@ void SnakeGame::plantTarget() {
     while (true) {
         x = rand() % BOARD_SIZE;
         y = rand() % BOARD_SIZE;
-        if (!snake.contains(Pair<int>(x, y))) break;
-    }
-    target = Pair<int>(x, y);
-}
-
-// check if snake has found the target
-void SnakeGame::detectTarget() {
-    // TODO (DONE):
-    // get the head of the snake from the queue.
-    // if the head is the same as the target:
-    //    use the following code to erase the target.
-    //    drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
-    //           NamedColor::red);
-    //    call plantTarget() to put the target down again in a new random
-    //    location.
-    Pair<int> head = snake.getLast();
-    if (head == target) {
-        drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
-                   NamedColor::red);
-        plantTarget();
+        if (!snake.contains(Pair<int>(x, y))) {
+            break;
+        }
+        target = Pair<int>(x, y);
     }
 }
 
-// check if snake ate itself! Yuk!
-void SnakeGame::detectDeath() {
-    // TODO (DONE):
-    // We have already put the new block on the head of the snake,
-    // so we need to check if that block  is somewhere else already in the body
-    // of the snake. Implementation: if the head of the snake is already in the
-    // body of the snake, call exit(0) to end the game.
-    Pair<int> head = snake.getLast();
-    if (snake.contains(head)){
-        exit(0);
+    // check if snake has found the target
+    void SnakeGame::detectTarget() {
+        // TODO (DONE):
+        // get the head of the snake from the queue.
+        // if the head is the same as the target:
+        //    use the following code to erase the target.
+        //    drawSymbol(target.getFirst(), target.getSecond(),
+        //    NamedSymbol::none,
+        //           NamedColor::red);
+        //    call plantTarget() to put the target down again in a new random
+        //    location.
+        Pair<int> head = snake.getLast();
+        if (head == target) {
+            drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::none,
+                       NamedColor::red);
+            plantTarget();
+        }
     }
-}
 
-void SnakeGame::paintBoard() {
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        for (int j = 0; j < BOARD_SIZE; j++) {
-            if (i % 2 == j % 2) {
-                setBGColor(i, j, NamedColor::green);
-            } else {
-                setBGColor(i, j, NamedColor::forestgreen);
+    // check if snake ate itself! Yuk!
+    void SnakeGame::detectDeath() {
+        // TODO (DONE):
+        // We have already put the new block on the head of the snake,
+        // so we need to check if that block  is somewhere else already in the
+        // body of the snake. Implementation: if the head of the snake is
+        // already in the body of the snake, call exit(0) to end the game.
+        // Pair<int> head = snake.getLast();
+        // if (snake.contains(head)){
+        //     exit(0);
+        // }
+    }
+
+    void SnakeGame::paintBoard() {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (i % 2 == j % 2) {
+                    setBGColor(i, j, NamedColor::green);
+                } else {
+                    setBGColor(i, j, NamedColor::forestgreen);
+                }
             }
         }
     }
-}
 
-// redraw
-void SnakeGame::paint() {
-    paintBoard();
-    drawSnake();
-    drawTarget();
-}
-
-void SnakeGame::drawTarget() {
-    // show the number "1" as the target. Option: make it random from 1 to 9 and
-    // make the snake longer by that amount when it is eaten.
-    drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::one,
-               NamedColor::red);
-}
-
-void SnakeGame::drawSnake() {
-    // TODO:
-    // iterate through the snake queue, using the queue iterator.
-    //   for each item (a Pair object), call setBGColor to set the square to
-    //   NamedColor::silver.
-    // After the loop, call setBGColor again to set the head of the snake to
-    // white.
-    for(Queue<Pair<int>>::iterator i = snake.begin(); i != snake.end(); i++){
-        int x = i->getFirst();
-        int y = i->getSecond();
-        setBGColor(x, y, NamedColor::silver);
-    }
-    setBGColor(snake.getLast().getFirst(), snake.getLast().getSecond(), NamedColor::white);
-
-   
-}
-
-// handle input, check if target was detected, update position, redraw,
-// detect if snake ate itself
-void SnakeGame::gameLoop() {
-    frame += 1;
-    handleInput();
-    if (frame >= 5) {  // this could be changed to make the game run faster...
-        lastDir = dir;
-        updateSnake();
-        detectTarget();
-        detectDeath();
-        paint();
-        frame = 0;
-    }
-}
-
-// Initialize your game
-// Call your game class with your assignment id, username, and api key
-int main(int argc, char** argv) {
-    if (argc != 3) {
-        cerr << "Usage: snake <bridges_username> <bridges_user_id>" << endl;
-        exit(-1);
+    // redraw
+    void SnakeGame::paint() {
+        paintBoard();
+        drawSnake();
+        drawTarget();
     }
 
-    SnakeGame game(1111, argv[1], argv[2]);
+    void SnakeGame::drawTarget() {
+        // show the number "1" as the target. Option: make it random from 1 to 9
+        // and make the snake longer by that amount when it is eaten.
+        drawSymbol(target.getFirst(), target.getSecond(), NamedSymbol::one,
+                   NamedColor::red);
+    }
 
-    game.start();
-}
+    void SnakeGame::drawSnake() {
+        // TODO:
+        // iterate through the snake queue, using the queue iterator.
+        //   for each item (a Pair object), call setBGColor to set the square to
+        //   NamedColor::silver.
+        // After the loop, call setBGColor again to set the head of the snake to
+        // white.
+        for (Queue<Pair<int>>::iterator i = snake.begin(); i != snake.end();
+             i++) {
+            int x = i->getFirst();
+            int y = i->getSecond();
+            setBGColor(x, y, NamedColor::silver);
+        }
+        setBGColor(snake.getLast().getFirst(), snake.getLast().getSecond(),
+                   NamedColor::white);
+    }
+
+    // handle input, check if target was detected, update position, redraw,
+    // detect if snake ate itself
+    void SnakeGame::gameLoop() {
+        frame += 1;
+        handleInput();
+        if (frame >=
+            5) {  // this could be changed to make the game run faster...
+            lastDir = dir;
+            updateSnake();
+            detectTarget();
+            detectDeath();
+            paint();
+            frame = 0;
+        }
+    }
+
+    // Initialize your game
+    // Call your game class with your assignment id, username, and api key
+    int main(int argc, char** argv) {
+        if (argc != 3) {
+            cerr << "Usage: snake <bridges_username> <bridges_user_id>" << endl;
+            exit(-1);
+        }
+
+        SnakeGame game(1111, argv[1], argv[2]);
+
+        game.start();
+    }

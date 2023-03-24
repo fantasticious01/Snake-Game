@@ -148,8 +148,8 @@ void SnakeGame::plantTarget() {
         // so we need to check if that block  is somewhere else already in the
         // body of the snake. Implementation: if the head of the snake is
         // already in the body of the snake, call exit(0) to end the game.
-        Pair<int> head = snake.getLast();
-        if (snake.contains(head)){
+        int loc = snake.getIndexOf(snake.getLast());
+        if (loc != snake.getSize() - 1){
             exit(0); 
         }
     }
